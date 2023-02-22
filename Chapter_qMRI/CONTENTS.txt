@@ -1,0 +1,19 @@
+ This folder contains extracted code from the chapters of the second edition of the book.
+ Files chapter_xxx.R provide the complete code of chapter xxx while
+ init_xxx.R contains the package initializations and filename declarations and
+ chapter_xxx_code(n).R are code snippets that can be run independently from each other after sourcing 'init_xxx' and
+ a) intermediate results have been downloaded as described in Appendix C or
+ b) all code snippets with smaller number have been run at lest once before to generate the intermediate results needed.
+
+chapter_qMRI_all.R            - contains complete code extracted from the book chapter by knitr::purl
+chapter_qMRI_initMPM.R        - initialization for MPM code snippets
+chapter_qMRI_preprocessMPM.R  - registration of MPM files, requires fslr and ANTsR
+chapter_qMRI_readMPM.R        - construct MPMdata object
+chapter_qMRI_estESTATICS.R    - compute estimates in the ESTATICS model, computationally expensive
+chapter_qMRI_smoothESTATICS.R - adaptive multivariate smoothing of estimated parameters
+chapter_qMRI_registerB1.R     - registration of B1 Map, requires ANTsR
+chapter_qMRI_qMaps.R          - estimate parameter maps
+
+chapter_qMRI_prepareIR.R      - create simulated IR-MRI data
+chapter_qMRI_estIR.R          - estimate parameters in model for tissue porosity
+
