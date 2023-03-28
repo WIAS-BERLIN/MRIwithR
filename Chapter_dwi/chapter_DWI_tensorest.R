@@ -1,6 +1,8 @@
-source("../CodeSecondEdition/chapter_DWI_init.R")
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_dwi","chapter_DWI_init.R"))
+
 load(file.path(rdwi,"dataobj.rsc"))
-fnsigma <- file.path(rdwipd, "sub-01_ses-106_sigma")
+fnsigma <- file.path(rdwipd, "sub-01_ses-2015_sigma")
 sigma <- as.array(readNIfTI(fnsigma))
 sigma <- sigma[dwobj@xind,dwobj@yind,]
 ## ----"DTI model",eval = FALSE,echo=TRUE,results='hide'------------------------------------------------------
@@ -25,7 +27,6 @@ adcDT[3:5]
 
 
 ## ----"nlDTI model",eval = FALSE,echo=TRUE,results='hide'----------------------------------------------------
-setCores(4)
 dtiobjnl <- dtiTensor(dwobj,
                       method = "nonlinear")
 
@@ -36,7 +37,6 @@ signif(matrix(dtiobjnl@D[, 56, 56, 41][ind],
 
 
 ## ----"qlDTI model",eval=FALSE,echo=2:9,results='hide'-------------------------------------------------------
-setCores(4)
 ## ## sigma contains negative values introduced in topup
 thresh <- quantile(sigma[dwobj@mask], .1)
 sigma[sigma < thresh] <- thresh

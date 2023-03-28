@@ -1,16 +1,18 @@
-source("../CodeSecondEdition/chapter_DWI_init.R")
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_dwi","chapter_DWI_init.R"))
+
 load(file.path(rdwi,"fibertracks.rsc"))
 pho <- readNIfTI(file.path(fsl_atlas_dir(),
                            "HarvardOxford",
                  "HarvardOxford-cort-prob-1mm.nii.gz"))
 img <- as.nifti(apply(pho, 1:3, sum) > 0, pho)
-fnhomask <- file.path(resDir, "tmp", "HOmask")
+fnhomask <- file.path(tmpdir, "HOmask")
 writeNIfTI(img, fnhomask)
 
 fnmask <- file.path(rdwipd,
-                    "sub-01_ses-106_brain_mask.nii.gz")
+                    "sub-01_ses-2015_brain_mask.nii.gz")
 mask <- antsImageRead(fnmask)
-homask <- antsImageRead(file.path(resDir, "tmp",
+homask <- antsImageRead(file.path(tmpdir,
                                   "HOmask.nii.gz"))
 ho2dwi <- antsRegistration(fixed = mask,
                            moving = homask,
@@ -22,11 +24,11 @@ atlas <- antsImageRead(fnatlas)
 hoindwi <- antsApplyTransforms(mask, atlas,
   ho2dwi$fwdtransforms, interpolator = "genericLabel")
 fnHOatlas <- file.path(rdwipd,
-                       "sub-01_ses-106_HOatlas.nii.gz")
+                       "sub-01_ses-2015_HOatlas.nii.gz")
 antsImageWrite(hoindwi, fnHOatlas)
 
 HOatlas <- readNIfTI(fnHOatlas)
-zMT <- AdjacencyMatrix(trxcomb5, HOatlas)
+zMT <- AdjacencyMatrix(trxcomb50, HOatlas)
 
 
 set.seed(1)

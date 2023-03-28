@@ -1,0 +1,9 @@
+Appendix_A         code of Appendix A 
+Appendix_C         code for Appendix C
+book_init.R        initialisation of code directories 
+Chapter_dwi        code for chapter 5
+Chapter_fmri       code for chapter 4
+Chapter_IO         code for chapter 3
+Chapter_IRMRI      code for chapter 7
+Chapter_MPM        code for chapter 6
+Chapter_MRI        code for chapter 2

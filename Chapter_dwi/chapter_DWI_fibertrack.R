@@ -1,4 +1,6 @@
-source("../CodeSecondEdition/chapter_DWI_init.R")
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_dwi","chapter_DWI_init.R"))
+
 load(file=file.path(rdwi,"tensorIndices.rsc"))
 load(file=file.path(rdwi,"dmtcomb.rsc"))
 load(file=file.path(rdwi,"dtiobjsmooth.rsc"))
@@ -15,14 +17,11 @@ trxql.gauss <- tracking(dtiindql.gauss)
 trxql.gauss <- selectFibers(trxql.gauss, minlength = 20)
 trxql.gauss <- reduceFibers(trxql.gauss)
 
-trx.sm <- tracking(dtiind.sm)
-trx.sm <- selectFibers(trx.sm, minlength = 20)
-trx.sm <- reduceFibers(trx.sm)
 
 trxcomb5 <- tracking(dmtcomb, mincompartsize = .05)
+trxcomb5 <- trxcomb50 <- reduceFibers(trxcomb5)
 trxcomb5 <- selectFibers(trxcomb5, minlength = 20)
-trxcomb5 <- reduceFibers(trxcomb5)
 
-save(trxql, trxql.poas, trxcomb5, file=file.path(rdwi,"fibertracks.rsc"))
+save(trxql, trxql.poas, trxcomb5, trxcomb50, file=file.path(rdwi,"fibertracks.rsc"))
 
-rm(trxql, trxql.poas, trxcomb5, trx.sm, trxql.gauss)
+rm(trxql, trxql.poas, trxcomb5,  trxcomb50, trxql.gauss)

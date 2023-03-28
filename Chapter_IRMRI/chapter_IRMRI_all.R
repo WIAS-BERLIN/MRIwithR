@@ -6,9 +6,8 @@ options(width=50, digits=3)
 
 
 ## ----label="packages and filenames", eval=TRUE, echo=-1----------
-baseDir <- "../.."
-codeDirIR <- file.path(baseDir,"MRIwithR","Chapter_IRMRI")
-source(file.path(codeDirIR,"chapter_IRMRI_init.R"))
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_IRMRI","chapter_IRMRI_init.R"))
 
 ## ----label="initIR", echo=FALSE, eval=TRUE, message=FALSE, results=FALSE-----------
 rimage.options(zquantiles=c(0.001,0.999), 
@@ -28,7 +27,7 @@ haveIRestimates <- file.exists(file.path(IRresDir,
 ## ----"segment kirbyT1", echo=TRUE, eval=!haveKirbySegm----------
 if(!haveKirbySegm){
 download_t1_data()
-brainFile <- file.path(IRresDir, "betKirby21T1.nii.gz")
+brainFile <- file.path(IRresDir, "betFileKirby21T1.nii.gz")
 fslbet(get_t1_filenames()[6], outfile=brainFile, 
        retimg=TRUE, reorient=FALSE, betcmd="bet2",
        opt="-m")
@@ -59,7 +58,7 @@ InvTimes <- c(100, 200, 400, 600, 800, 1200, 1600,
 
 
 ## ----label="Fig:IRcurves", fig.width=12, fig.height=6, fig.cap="Intensities as functions of inversion times and tissue type (black for CSF, red for GM and green for WM)"----
-x <- seq(100, 12000, 10)
+x <- seq(100, 15000, 10)
 fintCSF <- qMRI:::IRhomogen(c(Sf, Rf), InvTimes)
 fintGM <- qMRI:::IRmix2(c(fgm, Rgm, Sgm), 
                         InvTimes, Sf, Rf)
@@ -149,7 +148,9 @@ title("Fluid proportion map")
 if(!haveIRestimates){
   alpha <- 1e-4
 sIRmix <- smoothIRSolid(IRmix, alpha=alpha, 
-                        verbose=FALSE)
+                        partial=FALSE, verbose=FALSE)
+sIRmix <- estimateIRsolidfixed(sIRmix, verbose=FALSE)
+save(IRfluid, IRmix, sIRmix, file=file.path(IRresDir,"IRestimates.rsc"))
 }
 
 ## ----label="Fig_7_2", echo=-1, eval=TRUE, fig.width=10, fig.height=3.78, fig.cap="Smoothed IR parameter maps for central slice"----------

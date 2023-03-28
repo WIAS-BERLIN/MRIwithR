@@ -1,7 +1,8 @@
-if(!exists("baseDir")) baseDir <- "../.."
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","book_init.R"))
 if(!dir.exists(baseDir)) stop("please define baseDir")
-IRdataDir <- file.path(baseDir,"data","IR")
-IRresDir <- file.path(baseDir,"results","IR")
+IRdataDir <- file.path(baseDir,"MRIwithRdata","IR")
+IRresDir <- file.path(baseDir,"MRIwithRresults","IR")
 if(!dir.exists(IRresDir)) dir.create(IRresDir)
 IRT1Dir <- file.path(IRresDir,"T1")
 if(!dir.exists(IRT1Dir)) dir.create(file.path(IRresDir,"T1"))

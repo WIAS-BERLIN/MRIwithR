@@ -1,0 +1,3 @@
+## Code for Chapter 2  Inversion Recovery MRI
+
+chapter_MRI_all.R     Complete code of chapter 2

@@ -1,7 +1,5 @@
-if(!exists("baseDir")) baseDir <- "../.."
-if(!dir.exists(baseDir)) stop("please define baseDir")
-dataDir <- file.path(baseDir,"data")
-resDir <- file.path(baseDir,"results")
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","book_init.R"))
 fMRIresDir <- file.path(resDir,"fMRI")
 if(!dir.exists(fMRIresDir)) dir.create(fMRIresDir)
 #  load packages and define filenames 
@@ -19,7 +17,7 @@ library(neuRosim)
 library(oro.nifti)
 library(rgl)
 library(XML)
-
+setCores(16)
 
 f117df <- file.path("ds000117", "sub-01", "ses-mri", "func")
 f117s1r1 <- file.path(dataDir, f117df,
@@ -76,19 +74,19 @@ f105s1r1events <- file.path(dataDir, f105df, f1ev)
 if(!dir.exists(file.path(resDir, "MyConnectome"))) dir.create(file.path(dataDir, "MyConnectome"))
 if(!dir.exists(file.path(resDir, "MyConnectome","sub-01")))
  dir.create(file.path(resDir, "MyConnectome","sub-01"))
-if(!dir.exists(file.path(resDir, "MyConnectome","sub-01", "ses-105")))
-  dir.create(file.path(resDir, "MyConnectome","sub-01", "ses-105"))
-if(!dir.exists(file.path(resDir, "MyConnectome","sub-01", "ses-105", "func")))
-  dir.create(file.path(resDir, "MyConnectome","sub-01", "ses-105", "func"))
-MCf <- file.path("MyConnectome", "sub-01", "ses-105", "func")
-g <- "sub-01_ses-105_task-rest_run-010_bold.nii.gz"
+if(!dir.exists(file.path(resDir, "MyConnectome","sub-01", "ses-WashU")))
+  dir.create(file.path(resDir, "MyConnectome","sub-01", "ses-WashU"))
+if(!dir.exists(file.path(resDir, "MyConnectome","sub-01", "ses-WashU", "func")))
+  dir.create(file.path(resDir, "MyConnectome","sub-01", "ses-WashU", "func"))
+MCf <- file.path("MyConnectome", "sub-01", "ses-WashU", "func")
+g <- "sub-01_ses-WashU_task-rest_run-24_bold.nii.gz"
 frest <- file.path(dataDir, MCf, g)
 fprest <- file.path(resDir, MCf, paste0("prmc", g))
 fprestmask <- file.path(resDir, MCf,
-        "sub-01_ses-105_task-rest_run_010_mask.nii.gz")
+        "sub-01_ses-WashU_task-rest_run_24_mask.nii.gz")
 fileMNI2 <- file.path(fsl_std_dir(),
                      "MNI152_T1_2mm_brain_mask.nii.gz")
-fr0 <- "sub-01_ses-105_task-rest_run-001_bold"
+fr0 <- "sub-01_ses-WashU_task-rest_run-24_bold"
 mfprest0 <- file.path(resDir, MCf, paste0("meanpmc",fr0))
 ## writeNIfTI requires file names without extension
 fr0 <- paste0(fr0,".nii.gz")

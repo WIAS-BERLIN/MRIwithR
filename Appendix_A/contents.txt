@@ -1,0 +1,6 @@
+## Code for Appendix A
+chapter_nonpara_all.R       complete code of Appendix A
+
+chapter_nonpara_init.R      Initialization for Appendix A
+chapter_nonpara_prop.R      Propagation condition
+chapter_nonpara_smooth.R    Smoothing

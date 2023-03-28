@@ -1,4 +1,6 @@
-source("../CodeSecondEdition/chapter_DWI_init.R")
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_dwi","chapter_DWI_init.R"))
+
 gradientFile <- file.path(rdwipd,
                           "sub-01_ses-106_dwi_proc.eddy_rotated_bvecs")
 bvalueFile <- file.path(rdwipd,

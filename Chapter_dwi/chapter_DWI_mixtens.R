@@ -1,6 +1,7 @@
-source("../CodeSecondEdition/chapter_DWI_init.R")
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_dwi","chapter_DWI_init.R"))
+
 load(file.path(rdwi,"dataobj.rsc"))
-setCores(64) 
 
 ## ----"Tensor mixtures", eval=FALSE, echo=TRUE, results='hide',cache=TRUE------------------------------------
 dmtobj5 <- dwiMixtensor(dwobj, maxcomp = 5, model = "MTiso")
@@ -16,7 +17,7 @@ dmtcomb <- dwiMtCombine(dmtcomb, dmtobj1)
 mtindices <- extract(dmtcomb,
                     what = c("w0", "fa", "eorder", "order"))
 
-save(dmtcomb, file=file.path(rdwi,"dmtcomb.rsc"))
+save(mtindices, dmtcomb, file=file.path(rdwi,"dmtcomb.rsc"))
 rm(dmtobj1,dmtobj2,dmtobj3,dmtobj4,dmtobj5,dmtcomb,
      mtindices)
 

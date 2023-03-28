@@ -1,0 +1,6 @@
+## Code for Chapter 7  Inversion Recovery MRI
+
+chapter_IRMRI_all.R       Complete code of chapter 7
+chapter_IRMRI_estimate.R  Compute estimates of model parameters
+chapter_IRMRI_init.R      Initialization of code for chapter 7
+chapter_IRMRI_prepare.R   Create simulated IRMRI data

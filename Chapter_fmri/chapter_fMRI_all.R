@@ -7,9 +7,8 @@ knit_hooks$set(rgl = hook_rgl)
 options(width=50)
 
 ## ----label="packages and filenames", eval=TRUE, echo=-1--------------------------------------------------------------------------------------
-baseDir <- "../.."
-codeDirfMRI <- file.path(baseDir,"MRIwithR","Chapter_fmri")
-source(file.path(codeDirfMRI,"chapter_fMRI_init.R"))
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_fmri","chapter_fMRI_init.R"))
 
 ## ----label="initadimpro3", echo=FALSE, eval=TRUE, message=FALSE------------------------------------------------------------------------------
 rimage.options(zquantiles=c(0.001,0.98),xlab="x",ylab="z",bty="n",xaxt="n",yaxt="n")
@@ -27,7 +26,7 @@ if(!haveregistration&&!haveANTsR) stop("No ANTsR installed, need precomputed dat
 if(!haveconnectivity&&!haveANTsR) stop("No ANTsR installed, need precomputed data")
 
 ## ----label="slice timing version 1", echo=TRUE, eval=! haveslicetime, warning=FALSE----------------------------------------------------------
-If(!haveslicetime) {
+if(!haveslicetime) {
 niirun1.o <- readNIfTI(f117s1r1, reorient = FALSE)
 niirun1 <- oro2fmri(niirun1.o, setmask = FALSE)
 sltimes <- c(seq(1, 33, 2), seq(2, 32, 2))
@@ -383,7 +382,7 @@ plot(pvalue.b, bimg,
 
 ## ----label="reevaluate GLM with smoothed data", echo=TRUE, eval=!havespms, results=FALSE , warning=FALSE-------------------------------------
 if(!havespms){
- ds.s <- oro2fmri(snii.s)
+ ds.s <- oro2fmri(snii)
  ds.s$mask <- mask
  spm.s <- fmri.lm(ds.s, xdesign, contrast = contrast, mask=mask)
 
@@ -512,6 +511,9 @@ if(!havespms){
  pattern.faces <- getSearchlightPattern(spm.faces,
                        pvaluesl.faces$pvalue < 0.05,
                        radius = 2)
+ save(nii, snii, scans, xdesign, spm, pattern.faces, pvaluesl.faces, 
+      pvaluesl.houses, spm.segment, spm.smooth, pvalueaws, pvaluecl, pvaluefdr, pvaluesm, 
+      pvalue.v, pvalue.b, file=file.path(resDir,"fMRI","spms.rsc"))
 }
 
 ## ----"dim pattern", echo=TRUE, eval=TRUE-----------------------------------------------------------------------------------------------------
@@ -526,21 +528,22 @@ if(!haveconnectivity){
  avimg <-getAverageOfTimeSeries(pfmrirest$cleanBoldImage)
 
 ## ----label="ANTsR pre-processing for group ICA2", echo=TRUE, eval=!haveconnectivity, results=FALSE-------------------------------------------
+ ind <- c(7,8,9,10,11,18,19,20,21,24)
  for( i in 1:9){
-   fr <- paste0("sub-01_ses-105_task-rest_run-00",
-                i, "_bold.nii.gz")
+   fr <- paste0("sub-01_ses-WashU_task-rest_run-",
+                ind[i], "_bold.nii.gz")
    file <- file.path(dataDir, "MyConnectome",
-               "sub-01", "ses-105", "func", fr)
+               "sub-01", "ses-WashU", "func", fr)
    fmrirest <- antsImageRead(file)
    pfmrirest <- preprocessfMRI(fmrirest,
              meanBoldFixedImageForMotionCorrection=avimg)
    pfile <- file.path(resDir, "MyConnectome",
-         "sub-01", "ses-105", "func", paste0("prmc", fr))
+         "sub-01", "ses-WashU", "func", paste0("prmc", fr))
    antsImageWrite(pfmrirest$cleanBoldImage, pfile)
    fileprestmask <- file.path(resDir, "MyConnectome",
-                     "sub-01", "ses-105", "func",
-               paste0("sub-01_ses-105_task-rest_run_00",
-                      i, "_mask.nii.gz"))
+                     "sub-01", "ses-WashU", "func",
+               paste0("sub-01_ses-WashU_task-rest_run_",
+                      ind[i], "_mask.nii.gz"))
    antsImageWrite(pfmrirest$maskImage, fileprestmask)
  }
 
@@ -566,10 +569,10 @@ plot(ICAresult, 21)
 if(!haveconnectivity){
  ICAresults <- list(NULL)
  for(i in 1:9){
-   fr <- paste0("prmcsub-01_ses-105_task-rest_run-00",
-                i, "_bold.nii.gz")
+   fr <- paste0("prmcsub-01_ses-WashU_task-rest_run-",
+                ind[i], "_bold.nii.gz")
    file <- file.path(resDir, "MyConnectome",
-                     "sub-01", "ses-105",
+                     "sub-01", "ses-WashU",
                      "func", fr)
    nii <- readNIfTI(file, reorient = FALSE)
    ds <- oro2fmri(nii)
@@ -686,6 +689,7 @@ if(!haveconnectivity){
  gpc <- graph_from_adjacency_matrix(pcor,
                                     "undirected",
                                     weighted = TRUE)
+ save(gcor,gpc,rcor,pcor,file=file.path(resDir,"fMRI","Connmaps.rsc"))
 }
 
 ## ----"Figure_4_23",eval=TRUE,echo=TRUE,out.width='100%', fig.align="center",fig.cap="Functional connectivity between Brodmann areas: Connectivity graphs obtained from resting state fMRI using correlation (left) and partial correlation matrices (right).",fig.width=14,fig.height=8----

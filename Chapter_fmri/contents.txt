@@ -1,0 +1,10 @@
+## Code for Chapter 4  functional MRI
+
+chapter_fMRI_all.R              complete code of chapter 4
+
+chapter_fMRI_ANTsMotionC.R      Motion modelling using ANTsR
+chapter_fMRI_connectivity.R     Functional connectivity
+chapter_fMRI_init.R             Initialization of code for chapter 5
+chapter_fMRI_registration.R     Image registration
+chapter_fMRI_slicetiming.R      Slicetiming
+chapter_fMRI_SPMs.R             Compute SPMs

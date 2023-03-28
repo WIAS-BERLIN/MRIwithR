@@ -1,0 +1,12 @@
+## Code for Appendix C Data, software and hardware resorces
+
+chapter_data_all.R                 complete code of Appendix C
+
+chapter_data_code.R                download the R code used in the book
+chapter_data_install_packages.R    install packages used in the book
+chapter_data_download_data.R       download data used in the book
+chapter_data_download_results.R    download intermediate results
+
+To reproduce the examples of the book you will need to download the code, install the needed packages and download the data.
+If no intermediate results are recieved they will be (up to the results from xfibres and probtrackx in chapter DWI) produced when executing the code.
+

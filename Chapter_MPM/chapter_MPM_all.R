@@ -5,14 +5,12 @@ knitr::opts_chunk$set(warning = FALSE,
 options(width=50, digits=3)
 
 ## ----label="packages and filenames", eval=TRUE, echo=-1----
-baseDir <- "../.."
-codeDirMPM <- file.path(baseDir,"MRIwithR","Chapter_MPM")
-source(file.path(codeDirMPM,"chapter_MPM_init.R"))
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_MPM","chapter_MPM_init.R"))
 
 ## ----label="initMPM", echo=FALSE, eval=TRUE, message=FALSE, results=FALSE----
 rimage.options(zquantiles=c(0.001,0.999), 
                xlab="x", ylab="z", bty="n")
-setCores(4) # number of cores for parallel computations
 
 ## ----label="MPMdata", echo=TRUE, eval=TRUE------
 t1Dir <- "t1w_mfc_3dflash_v1i_R4_0015"
@@ -135,6 +133,7 @@ if(!haveMPMdata){
  mpm <- readMPMData(t1Files, rpdFiles, rmtFiles,
                     maskFile, TR = mpm$TR, TE = mpm$TE,
                     FA = mpm$FA, verbose = FALSE)
+ save(mpm, file=file.path(MPMresDir, "MPMdata.rsc"))
 }
 
 ## ----label="Figure_6_2", echo= 2:5, eval=TRUE, fig.cap="Registered first $T_1$, MT and PD images, cf. Fig. \\ref{fig:Figure_6_1}.", fig.width=7, fig.height=2.4----
@@ -286,6 +285,7 @@ if(!havemodelMPM){
  qMRImapsQL <- calculateQI(modelMPMQL,
                            b1File = B1mapRegFile,
                            TR2 = 3.4)
+ save(sigma, modelMPM, modelMPMQL, file=file.path(MPMresDir, "modelMPM.rsc"))
 }
 
 ## ----label="Parameter extraction", echo=TRUE, eval=TRUE----
@@ -439,6 +439,7 @@ if(!havesmoothedModelMPM){
                                alpha = 0.5,
                                patchsize=1,
                                verbose = TRUE)
+ save(modelMPMs, modelMPMsp1, file=file.path(MPMresDir, "smoothModelMPM.rsc"))
 }
 
 ## ----label="calculateSmoothedp1MapsFTcorr", echo=TRUE, eval=!haveMPMmaps, results=FALSE----
@@ -451,6 +452,7 @@ if(!haveMPMmaps){
  qMRISmoothedp1Maps <- calculateQI(modelMPMsp1,
                                    b1File = B1mapRegFile,
                                    TR2 = 3.4)
+ save(qMRImaps, qMRImapsB1C, qMRImapsQLB1C, qMRISmoothedMaps, qMRISmoothedp1Maps, file=file.path(MPMresDir, "qMaps.rsc"))
 }
 
 ## ----label="Figure_6_9", echo=2:9, eval=TRUE, fig.cap="Smoothed and bias-corrected qMRI maps. Here the statistical penalty from Eq.~\\eqref{eq:QMRIStatPenPAWS} of the patch wise refinement of the adaptive smoothing procedure was used.", fig.width=7, fig.height=6.4----

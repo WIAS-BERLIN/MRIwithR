@@ -1,0 +1,11 @@
+## Code for Chapter 6 Multi-Parameter-Mapping
+
+chapter_MPM_all.R     complete code of chapter 6
+
+chapter_MPM_estESTATICS.R    Compute estimates in ESTATICS model
+chapter_MPM_init.R           Initialization for MPM
+chapter_MPM_preprocess.R     Preprocessing of MPM data
+chapter_MPM_qMaps.R          Compute parameter maps
+chapter_MPM_read.R           Read MPM data and construct data object   
+chapter_MPM_registerB1.R     Register B1 field to T1
+chapter_MPM_smoothESTATICS.R Smooth parameter estimates

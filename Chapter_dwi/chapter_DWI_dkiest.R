@@ -1,4 +1,6 @@
-source("../CodeSecondEdition/chapter_DWI_init.R")
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_dwi","chapter_DWI_init.R"))
+
 load(file.path(rdwi,"dataobj.rsc"))
 ## ----"Compute dkitensor",eval = FALSE,echo=TRUE, results='hide'---------------------------------------------
 dkiobj <- dkiTensor(dwobj,

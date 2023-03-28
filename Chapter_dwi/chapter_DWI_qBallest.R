@@ -1,4 +1,6 @@
-source("../CodeSecondEdition/chapter_DWI_init.R")
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_dwi","chapter_DWI_init.R"))
+
 load(file.path(rdwi,"dataobj.rsc"))
 ## ----"dwiQball1",eval = TRUE, echo=TRUE, cache=TRUE, results='hide'-----------------------------------------
 qballw4 <- dwiQball(dwobj,

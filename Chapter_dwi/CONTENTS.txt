@@ -1,21 +1,15 @@
- This folder contains extracted code from the chapters of the second edition of the book.
- Files chapter_xxx.R provide the complete code of chapter xxx while
- init_xxx.R contains the package initializations and filename declarations and
- chapter_xxx_code(n).R are code snippets that can be run independently from each other after sourcing 'init_xxx' and
- a) intermediate results have been downloaded as described in Appendix C or
- b) all code snippets with smaller number have been run at lest once before to generate the intermediate results needed.
+## Code for Chapter 5 Diffusion Weighted Imaging
 
- chapter_DWI_all.R           - contains complete code extracted from the book chapter by knitr::purl
- chapter_DWI_init.R          - initializations
- chapter_DWI_preprocess.R    - data preprocessing, requires fslr and ANTsR
- chapter_DWI_tensorest.R     - parameter estimation for diffusion tensor imaging (DTI)
- chapter_DWI_varest.R        - variance estimation
- chapter_DWI_smooth.R        - (adaptive) smoothing of dwi data
- chapter_DWI_dkiest.R        - parameter estimation for diffusion kurtosis imaging (DTI)
- chapter_DWI_qBallest.R      - parameter estimation for qBALL imaging
- chapter_DWI_xfibres.R       - Behrens ball and 2-sticks model, requires fslr, runs > 1 week
- chapter_DWI_probtrackx.R    - probabilistic fiber tracking for Behrens ball and 2-sticks
-                               model, requires fslr::probtrackx, currently broken, direct call to FSL works
- chapter_DWI_mixtens.R       - estimates for mixtensor model, computationally expensive
- chapter_DWI_fibertrack.R    - streamline fiber tracking for tensor and mixtensor models
- chapter_DWI_ANTs_atlasreg.R - register atlas data for connectivity analysis
+chapter_DWI_all.R                  complete code of chapter 5
+
+chapter_DWI_dkiest.R               Estimation of kurtosis parameters
+chapter_DWI_init.R                 Initialization of code for chapter 5
+chapter_DWI_preprocess.R           Data preprocessing
+chapter_DWI_qBallest.R             Estimation of Q-ball parameters
+chapter_DWI_tensorest.R            Diffusion tensor parameters
+chapter_DWI_ANTs_atlasreg.R        Registration of atlas data using ANTsR 
+chapter_DWI_fibertrack.R           Fibertracking using tensor and mixtensor estimates
+chapter_DWI_mixtens.R              Evaluation of mixtensor models
+chapter_DWI_probtrackx.R           Probabilistic fiber tracking using xfibres results (fslr)
+chapter_DWI_smooth.R               Smoothing   
+chapter_DWI_xfibres.R              Behrens sticks and ball model (fslr)

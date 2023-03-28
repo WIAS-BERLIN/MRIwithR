@@ -6,25 +6,24 @@ options(width=50)
 
 
 ## ----label="packages and filenames", eval=TRUE, echo=-1------------------------------------------------------------------------------------------
-baseDir <- "../.."
-codeDirDWI <- file.path(baseDir,"MRIwithR","Chapter_dwi")
-source(file.path(codeDirDWI,"chapter_DWI_init.R"))
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","Chapter_dwi","chapter_DWI_init.R"))
 
 
 
 ## ----label="initMPM", echo=FALSE, eval=TRUE, message=FALSE, results=FALSE------------------------------------------------------------------------
 rimage.options(zquantiles=c(0.001,0.999), 
                xlab="x", ylab="z", bty="n")
-setCores(4) # number of cores for parallel computations
+#setCores(4) # number of cores for parallel computations
 
 
 ## ----"determine code to be executed, no need to reproduce results already computed in code snippets", eval=TRUE, echo=FALSE----------------------
-preprocessed <- file.exists(file.path(rdwipd,"sub-01_ses-106_dwi_proc.nii.gz"))
+preprocessed <- file.exists(file.path(rdwipd,"sub-01_ses-2015_dwi_proc.nii.gz"))
 # have results from chapter_DWI_preprocess.R
 if(!haveFSLr&&!preprocessed) stop("You need to install fslr or directory results")
 havedataobj <- file.exists(file.path(rdwi,"dataobj.rsc"))
 # data will be saved after first run of the document
-havesigma <- file.exists(file.path(rdwipd, "sub-01_ses-106_sigma.nii.gz"))
+havesigma <- file.exists(file.path(rdwipd, "sub-01_ses-2015_sigma.nii.gz"))
 # have results from chapter_DWI_varest.R
 havetensor <- file.exists(file.path(rdwi,"tensorObjects.rsc"))
 # have results from chapter_DWI_tensorest.R
@@ -50,8 +49,8 @@ if(!haveANTsR&&!haveconnect) stop("You need to install ANTsR or directory result
 ## ----label="Figure_5_1", echo=-1, eval = TRUE, results=FALSE, message=FALSE, fig.cap="Effect of phase encoding direction on a non-diffusion weighted image. Left: A-P encoding direction, right: P-A encoding direction. The distortions are rather large in, but not restricted to, the anterior brain regions (upper image part). The both images can be combined to a single distortions-corrected one.", fig.width=6, fig.height=3.3, out.width='66%', fig.align='center'----
 par(mfrow = c(1, 2),
     mar = c(1, 1, 2, 0.1), mgp = c(2, 1, 0))
-run1FileName <- "sub-01_ses-106_run-001_dwi.nii.gz"
-run2FileName <- "sub-01_ses-106_run-002_dwi.nii.gz"
+run1FileName <- "sub-01_ses-2015_acq-g79_dir-pe0_dwi.nii.gz"
+run2FileName <- "sub-01_ses-2015_acq-g79_dir-pe1_dwi.nii.gz"
 run1File <- file.path(dwid, run1FileName)
 run2File <- file.path(dwid, run2FileName)
 ds1 <- readNIfTI(run1File)
@@ -62,28 +61,28 @@ rimage(ds2[ , , 41, 2], main = "P-A phase encoding")
 
 ## ----label="initialize dirs", echo=TRUE, eval = TRUE, results=FALSE, message=FALSE---------------------------------------------------------------
 rdwipd <- file.path(resDir, "MyConnectome", "sub-01",
-                   "ses-106", "dwi-proc")
+                   "ses-2015", "dwi-proc")
 if (!dir.exists(rdwipd)) dir.create(rdwipd)
 
 ## ----label="Reading unprocessed data", echo=TRUE, eval=!preprocessed, results=FALSE--------------------------------------------------------------
 if(!preprocessed){
- run3File <- file.path(dwid,
-                   "sub-01_ses-106_run-003_dwi.nii.gz")
- run4File <- file.path(dwid,
-                   "sub-01_ses-106_run-004_dwi.nii.gz")
+  run3File <- file.path(dwid,
+                        "sub-01_ses-2015_acq-g81_dir-pe0_dwi.nii.gz")
+  run4File <- file.path(dwid,
+                        "sub-01_ses-2015_acq-g81_dir-pe1_dwi.nii.gz")
  ds3 <- readNIfTI(run3File)
  ds4 <- readNIfTI(run4File)
 }
 
 ## ----label="Reading bvals", echo=TRUE, eval = TRUE, results=TRUE---------------------------------------------------------------------------------
 fbval1 <- file.path(dwid,
-                    "sub-01_ses-106_run-001_dwi.bval")
+                    "sub-01_ses-2015_acq-g79_dir-pe0_dwi.bval")
 fbval2 <- file.path(dwid,
-                    "sub-01_ses-106_run-002_dwi.bval")
+                    "sub-01_ses-2015_acq-g79_dir-pe1_dwi.bval")
 fbval3 <- file.path(dwid,
-                    "sub-01_ses-106_run-003_dwi.bval")
+                    "sub-01_ses-2015_acq-g81_dir-pe0_dwi.bval")
 fbval4 <- file.path(dwid,
-                    "sub-01_ses-106_run-004_dwi.bval")
+                    "sub-01_ses-2015_acq-g81_dir-pe1_dwi.bval")
 bval1 <- scan(fbval1)
 bval2 <- scan(fbval2)
 bval3 <- scan(fbval3)
@@ -92,13 +91,13 @@ bval1
 
 ## ----label="Reading bvecs", echo=TRUE, eval = TRUE, results=TRUE---------------------------------------------------------------------------------
 fbvec1 <- file.path(dwid,
-                    "sub-01_ses-106_run-001_dwi.bvec")
+                    "sub-01_ses-2015_acq-g79_dir-pe0_dwi.bvec")
 fbvec2 <- file.path(dwid,
-                    "sub-01_ses-106_run-002_dwi.bvec")
+                    "sub-01_ses-2015_acq-g79_dir-pe1_dwi.bvec")
 fbvec3 <- file.path(dwid,
-                    "sub-01_ses-106_run-003_dwi.bvec")
+                    "sub-01_ses-2015_acq-g81_dir-pe0_dwi.bvec")
 fbvec4 <- file.path(dwid,
-                    "sub-01_ses-106_run-004_dwi.bvec")
+                    "sub-01_ses-2015_acq-g81_dir-pe1_dwi.bvec")
 bvec1 <- as.matrix(read.table(fbvec1))
 bvec2 <- as.matrix(read.table(fbvec2))
 bvec3 <- as.matrix(read.table(fbvec3))
@@ -114,27 +113,29 @@ if(!preprocessed){
  ds1b0[, , , 1:6] <- ds1[, , , b0select]
  ds1b0[, , , 7:12] <- ds2[, , , b0select]
  ds1b0 <- as.nifti(ds1b0, ds1)
- tmpfn <- file.path(tmpdir, "sub-01_ses-106_topupin")
+ tmpfn <- file.path(tmpdir, "sub-01_ses-2015_topupin")
  writeNIfTI(ds1b0, tmpfn)
 }
 
 ## ----label="readingAcquisitionData", echo=TRUE, eval=TRUE, results=TRUE--------------------------------------------------------------------------
-jsonFile1 <- file.path(dwijson,
-                      "sub-01_ses-106_run-001_dwi.json")
-jsonFile2 <- file.path(dwijson,
-                      "sub-01_ses-106_run-002_dwi.json")
+jsonFile1 <- file.path(dwid,
+                       "sub-01_ses-2015_acq-g79_dir-pe1_dwi.json")
+jsonFile2 <- file.path(dwid,
+                       "sub-01_ses-2015_acq-g79_dir-pe1_dwi.json")
 ttt1 <- read_json(jsonFile1)
 ttt2 <- read_json(jsonFile2)
 ttt1$InPlanePhaseEncodingDirection
-ttt1$GradientEncodingDirection
+ttt1$PhaseEncodingPolarityGE
+ttt1$PhaseEncodingDirection 
 ttt1$EchoTime
 ttt2$InPlanePhaseEncodingDirection
-ttt2$GradientEncodingDirection
+ttt2$PhaseEncodingPolarityGE
+ttt2$PhaseEncodingDirection 
 ttt2$EchoTime
 
 ## ----label="creatingAcquisitionDataFile", echo=TRUE, eval=!preprocessed, results=TRUE------------------------------------------------------------
 if(!preprocessed){
- acqParFile <- file.path(dwijson, "datainb0.txt")
+ acqParFile <- file.path(tmpdir, "datainb0.txt")
  dataIn <- matrix(0, 4, 12)
  dataIn[, 1:6] <- c(0, 1, 0, ttt1$EchoTime)
  dataIn[, 7:12] <- c(0, -1, 0, ttt2$EchoTime)
@@ -142,15 +143,15 @@ if(!preprocessed){
  dataIn
 
 ## ----label="creatingAcquisitionDataFile2", echo=TRUE, eval=!preprocessed, results=TRUE-----------------------------------------------------------
- acqParFileAll <- file.path(dwijson, "datain.txt")
+ acqParFileAll <- file.path(rdwipd, "datain.txt")
  dataIn <- matrix(0, 4, 2)
  dataIn[, 1] <- c(0, 1, 0, ttt1$EchoTime)
  dataIn[, 2] <- c(0, -1, 0, ttt2$EchoTime)
  write(dataIn, acqParFileAll, ncolumns = 4)
 
 ## ----label="Estimate_Distortions", echo=TRUE, eval=!preprocessed, message = FALSE, results=FALSE-------------------------------------------------
- fntopup <- file.path(rdwipd, "sub-01_ses-106_topupout")
- topio <- file.path(rdwipd, "sub-01_ses-106_topupiout")
+ fntopup <- file.path(rdwipd, "sub-01_ses-2015_topupout")
+ topio <- file.path(rdwipd, "sub-01_ses-2015_topupiout")
  topup(infile = tmpfn,
        acqParFile,
        out = fntopup,
@@ -160,21 +161,21 @@ if(!preprocessed){
        iout = topio)
 
 ## ----label="generate brain mask", echo=TRUE, eval=!preprocessed, results=FALSE-------------------------------------------------------------------
- fnmask <- file.path(rdwipd, "sub-01_ses-106_brain")
+ fnmask <- file.path(rdwipd, "sub-01_ses-2015_brain")
  rwid <- file.path(resDir, "MyConnectome", "sub-01",
-                   "ses-106", "dwi")
+                   "ses-2015", "dwi")
  fslbet(topio, fnmask, opts = "-m")
 } else {
   
 ## ----label="generate brain mask 2", echo=FALSE, eval=preprocessed, results=FALSE-----------------------------------------------------------------
-fnmask <- file.path(rdwipd, "sub-01_ses-106_brain")
+fnmask <- file.path(rdwipd, "sub-01_ses-2015_brain")
 }
 
 ## ----label="Figure_5_2", echo=-1, eval = TRUE, results=FALSE, message=FALSE, fig.cap="Result of the correction for the susceptibility-induced artifacts and the derived brain map on a non-diffusion weighted image.", fig.width=8, fig.height=4.3, out.width='66%', fig.align='center'----
 par(mfrow = c(1, 2),
     mar = c(1, 1, 2, 0.1), mgp = c(2, 1, 0))
-topio <- file.path(rdwipd, "sub-01_ses-106_topupiout")
-fnmask <- file.path(rdwipd, "sub-01_ses-106_brain")
+topio <- file.path(rdwipd, "sub-01_ses-2015_topupiout")
+fnmask <- file.path(rdwipd, "sub-01_ses-2015_brain")
 dscorrected <- readNIfTI(topio)
 mask <- readNIfTI(paste0(fnmask, "_mask"))
 rimage(dscorrected[ , , 41, 1], main = "Corrected image")
@@ -187,36 +188,37 @@ if(!preprocessed){
  dsall[, , , 82:164] <- ds3
  dsall[, , , 165:245] <- ds2
  dsall[, , , 246:328] <- ds4
- fndsall <- file.path(rdwipd, "sub-01_ses-106_dwiall")
+ fndsall <- file.path(rdwipd, "sub-01_ses-2015_dwiall")
  writeNIfTI(as.nifti(dsall, ds1), fndsall)
  bval <- c(bval1, bval3, bval2, bval4)
  bvec <- cbind(bvec1, bvec3, bvec2, bvec4)
- fbval <- file.path(rdwipd, "sub-01_ses-106_dwiall.bval")
- fbvec <- file.path(rdwipd, "sub-01_ses-106_dwiall.bvec")
+ fbval <- file.path(rdwipd, "sub-01_ses-2015_dwiall.bval")
+ fbvec <- file.path(rdwipd, "sub-01_ses-2015_dwiall.bvec")
  write(bval, fbval, ncolumns = length(bval))
  write.table(bvec, fbvec,
              row.names = FALSE, col.names = FALSE)
  ind <- c(rep(1, 164), rep(2, 164))
- fnindex <- file.path(rdwipd, "sub-01_ses-106_dwi.ind")
+ fnindex <- file.path(rdwipd, "sub-01_ses-2015_dwi.ind")
  write(ind, fnindex, ncolumns = length(ind))
  rm(ds1,ds2,ds3,ds4,dsall)
  gc()
 
 ## ----label="Eddy current correction", echo=TRUE, eval=!preprocessed, results=FALSE---------------------------------------------------------------
- fnout <- file.path(rdwipd, "sub-01_ses-106_dwi_proc")
+ fnout <- file.path(rdwipd, "sub-01_ses-2015_dwi_proc")
  eddy(fndsall,
-             fnmask,
-             acqParFileAll,
-             fnindex,
-             fbvec,
-             fbval,
-             fnout,
-             eddy_cmd = "eddy_openmp")
+      fnmask,
+      acqParFileAll,
+      fnindex,
+      fbvec,
+      fbval,
+      fnout,
+      fntopup,
+      eddy_cmd = "eddy_openmp")
 
 ## ----label = "write bvals", echo = TRUE, eval = !preprocessed, message = FALSE, results = 'hide'-------------------------------------------------
  bval <- c(bval1, bval3, bval1, bval3)
  fbval <- file.path(rdwipd,
-                    "sub-01_ses-106_dwi_proc.bval")
+                    "sub-01_ses-2015_dwi_proc.bval")
  write(bval, fbval, ncolumns = length(bval))
 }
 
@@ -232,11 +234,11 @@ yind <- 11:125
 ## ----label = "readDWIdata", echo = TRUE, eval = !havedataobj, message = FALSE, results = 'hide'--------------------------------------------------
 if(!havedataobj){
  gradientFile <- file.path(rdwipd,
-       "sub-01_ses-106_dwi_proc.eddy_rotated_bvecs")
+       "sub-01_ses-2015_dwi_proc.eddy_rotated_bvecs")
  bvalueFile <- file.path(rdwipd,
-       "sub-01_ses-106_dwi_proc.bval")
+       "sub-01_ses-2015_dwi_proc.bval")
  dataFile <- file.path(rdwipd,
-       "sub-01_ses-106_dwi_proc.nii.gz")
+       "sub-01_ses-2015_dwi_proc.nii.gz")
  gradient <- as.matrix(read.table(gradientFile))
  bvalue <- as.numeric(scan(bvalueFile))
  dwobj <- readDWIdata(gradient,
@@ -245,7 +247,7 @@ if(!havedataobj){
                       bvalue = bvalue,
                       xind = xind,
                       yind = yind)
- fnmask <- file.path(rdwipd,"sub-01_ses-106_brain_mask.nii.gz")
+ fnmask <- file.path(rdwipd,"sub-01_ses-2015_brain_mask.nii.gz")
  dwobj <- setmask(dwobj, fnmask)
 
 ## ----label = "saveDWIdata", echo = TRUE, eval = !havedataobj, message = FALSE, results = 'hide'--------------------------------------------------
@@ -355,7 +357,7 @@ title("Rician distributions")
 
 ## ----label="have variances", echo=FALSE, eval=havesigma------------------------------------------------------------------------------------------
 if(havesigma){
- fnsigma <- file.path(rdwipd, "sub-01_ses-106_sigma")
+ fnsigma <- file.path(rdwipd, "sub-01_ses-2015_sigma")
  load(file.path(rdwi,"sigmaest.rsc"))
  sigma <- as.array(readNIfTI(fnsigma))
 } else {
@@ -411,10 +413,11 @@ if(!havesigma){
  sb2 <- awslsigmc(dwobj2@si[ , , , 1], kstar, ncoils = 1)
 
 ## ----"using applytopup", eval = !havesigma, echo=TRUE--------------------------------------------------------------------------------------------
- fntopup <- file.path(dwipd, "sub-01_ses-106_topupout")
- fdn1 <- file.path(dwipd, "tmpn1")
- fdn2 <- file.path(dwipd, "tmpn2")
- fnsigma <- file.path(dwipd, "sub-01_ses-106_sigma")
+ acqParFileAll <- file.path(rdwipd, "datain.txt")
+ fntopup <- file.path(rdwipd, "sub-01_ses-2015_topupout")
+ fdn1 <- file.path(rdwipd, "tmpn1")
+ fdn2 <- file.path(rdwipd, "tmpn2")
+ fnsigma <- file.path(rdwipd, "sub-01_ses-2015_sigma")
  ds1 <- readNIfTI(run1File)
  writeNIfTI(as.nifti(sb1$sigma, ds1), fdn1)
  ds2 <- readNIfTI(run2File)
@@ -498,6 +501,7 @@ if(!havetensor){
  dtiobjql <- dtiTensor(dwobj,
                        method = "quasi-likelihood",
                        sigma = sigma)
+ save(dtiobj,dtiobjnl,dtiobjql, file=file.path(rdwi,"tensorObjects.rsc"))
 }
 
 ## ----"qlDTI model res",eval = TRUE, results='markup'---------------------------------------------------------------------------------------------
@@ -515,6 +519,7 @@ if(!havetensor){
  dtiind   <- dtiIndices(dtiobj)
  dtiindnl <- dtiIndices(dtiobjnl)
  dtiindql <- dtiIndices(dtiobjql)
+ save(dtiind,dtiindnl,dtiindql, file=file.path(rdwi,"tensorIndices.rsc"))
 }
 
 ## ----label="Figure_5_13",echo=-1,eval = TRUE, fig.cap="Left: FA map of an axial slice of the example dMRI data. Right:  Corresponding map of the geodesic anisotropy. The latter has been up-scaled in the value range for more image contrast. Thus, large GA values are saturated.", fig.width=5.3, fig.height=3.85,out.width='66%',fig.align='center'----
@@ -603,6 +608,7 @@ snapshot3d("figure/Figure_5_18b.png")
 ## ----"Compute dkiIndices",eval = !havedkitensor, echo=TRUE, results='hide',warning=FALSE,message=FALSE-------------------------------------------
 if(!havedkitensor){
  dkiind <- dkiIndices(dkiobj)
+ save(dkiobj, dkiind, file=file.path(rdwi,"dkiObjects.rsc"))
 }
 
 ## ----"Figure_5_19",eval = TRUE,echo=-c(1,6),fig.cap="Indices defined for the DKI model. From left to right: mean diffusivity, fractional (tensor) anisotropy, apparent kurtosis, and fractional kurtosis.", fig.width=8,fig.height=2.9----
@@ -612,7 +618,7 @@ par(mfrow = c(1, 4),
 plot(dkiind, slice = 41, what = "md", main="MD")
 plot(dkiind, slice = 41, what = "fa", main="FA")
 plot(dkiind, slice = 41, what = "mk2",
-     zlim = c(0, .025), main="Kapp")
+     zlim = c(0, 1.25), main="Kapp")
 plot(dkiind, slice = 41, what = "fak", main="FAK")
 rm(dkiind,dkiobj)
 
@@ -678,6 +684,8 @@ if(haveQball){
                       order=8, lambda=1e-2)
  qballw8c <- dwiQball(dwobj, what="wODF",
                       order=8, lambda=1e-1)
+ save(qballw4, qballw4a, qballw4c, qballw6a, qballw6b, qballw6c, 
+      qballw8a, qballw8b, qballw8c, file=file.path(rdwi,"qBallObjects.rsc"))
 }
 
 ## ----"Qball figures", eval=TRUE, echo=FALSE, results='hide'--------------------------------------------------------------------------------------
@@ -744,12 +752,12 @@ gc()
 ## call to xfibres needs > 1 week
 ## ----"Using fsl/xfibres", eval=FALSE, echo=TRUE--------------------------------------------------------------------------------------------------
 ## gradientFile <- file.path(rdwipd,
-##           "sub-01_ses-106_dwi_proc.eddy_rotated_bvecs")
+##           "sub-01_ses-2015_dwi_proc.eddy_rotated_bvecs")
 ## bvalueFile <- file.path(rdwipd,
-##                         "sub-01_ses-106_dwi_proc.bval")
+##                         "sub-01_ses-2015_dwi_proc.bval")
 ## dataFile <- file.path(rdwipd,
-##                       "sub-01_ses-106_dwi_proc")
-## fnmask <- file.path(rdwipd,"sub-01_ses-106_brain_mask")
+##                       "sub-01_ses-2015_dwi_proc")
+## fnmask <- file.path(rdwipd,"sub-01_ses-2015_brain_mask")
 ## xfibres(dataFile, gradientFile, bvalueFile, fnmask, 1,
 ##         verbose=FALSE, opts="--model=2")
 
@@ -824,6 +832,9 @@ show3d(dmtcomb,
 if(!havemixtensor){
  mtindices <- extract(dmtcomb, what =
                       c("w0", "fa", "eorder", "order"))
+ save(mtindices,dmtcomb, file=file.path(rdwi,"dmtcomb.rsc"))
+ rm(dmtobj1,dmtobj2,dmtobj3,dmtobj4,dmtobj5,dmtcomb,
+    mtindices)
 }
 
 ## ----"Figure_5_26", eval = TRUE, echo=-1, results='hide',fig.cap="Tensor mixture model of maximal order five: Isotropic compartment size, fractional anisotropy (FA), order of mixture and effective order (EO) of mixture (from left to right) for the central axial slice.",fig.width=10.,fig.height=3.6----
@@ -867,6 +878,7 @@ if(havesmooth){
                             method = "quasi-likelihood",
                             sigma = sigma)
  dtiindql.poas <- dtiIndices(dtiobjql.poas)
+ save(dtiindql.gauss, dtiindql.poas, file=file.path(rdwi,"dtiobjsmooth.rsc"))
  rm(dwobj.poas,dtiobjql.poas)
  gc()
 }
@@ -898,6 +910,7 @@ if(havefibers){
   trxcomb5 <- tracking(dmtcomb, mincompartsize = .05)
   trxcomb5 <- trxcomb50 <- reduceFibers(trxcomb5)
   trxcomb5 <- selectFibers(trxcomb5, minlength = 20)
+  save(trxql, trxql.poas, trxcomb5, trxcomb50, file=file.path(rdwi,"fibertracks.rsc"))
 }
   
 ## ----"rm dmtcomb", eval=TRUE, echo=FALSE---------------------------------------------------------------------------------------------------------
@@ -917,7 +930,7 @@ snapshot3d("figure/Figure_5_29c.png")
 
 ## probabilistic fibertracking needs > 1 week
 ## ----"seedmask", eval=FALSE, echo=TRUE-----------------------------------------------------------------------------------------------------------
-## fast(file.path(rdwipd,"sub-01_ses-106_brain.nii.gz"),
+## fast(file.path(rdwipd,"sub-01_ses-2015_brain.nii.gz"),
 ##      outfile=rdwipd)
 ## img2 <- readNIfTI(file.path(rdwipd,"_pve_2.nii.gz"))
 ## img1 <- readNIfTI(file.path(rdwipd,"_pve_1.nii.gz"))
@@ -926,7 +939,7 @@ snapshot3d("figure/Figure_5_29c.png")
 ## ----"Probablilistic fiber tracking",eval=FALSE,echo=TRUE----------------------------------------------------------------------------------------
 ## sdwipd <- file.path(ldwipd,"merged")
 ## fnmask <- file.path(rdwipd,
-##                     "sub-01_ses-106_brain.nii.gz")
+##                     "sub-01_ses-2015_brain.nii.gz")
 ## seeds <- file.path(rdwipd,"seeds.nii.gz")
 ## opt <- paste("--forcedir -V 2 -l --onewaycondition -c
 ##    0.2 -S 2000 --steplength=0.5 -P 5000 --fibthresh=0.01
@@ -951,7 +964,7 @@ if(haveprobtrackx){
 if(haveconnect){
   load(file.path(rdwi,"Connectivity.rsc"))
   fnHOatlas <- file.path(rdwipd,
-                       "sub-01_ses-106_HOatlas.nii.gz")
+                       "sub-01_ses-2015_HOatlas.nii.gz")
 } else {
   
 ## ----"Produce a mask for HarvardOxford atlas",eval=!haveconnect,echo=TRUE--------------------------------------
@@ -964,7 +977,7 @@ if(haveconnect){
   
 ## ----"Register HarvardOxford atlas to DWI subject space compute transform",eval=!haveconnect,echo=TRUE--------------------------------------
   fnmask <- file.path(rdwipd,
-                      "sub-01_ses-106_brain_mask.nii.gz")
+                      "sub-01_ses-2015_brain_mask.nii.gz")
  mask <- antsImageRead(fnmask)
  homask <- antsImageRead(file.path(tmpdir,
                                   "HOmask.nii.gz"))
@@ -979,7 +992,7 @@ if(haveconnect){
  hoindwi <- antsApplyTransforms(mask, atlas,
                                ho2dwi$fwdtransforms, interpolator = "genericLabel")
  fnHOatlas <- file.path(rdwipd,
-                       "sub-01_ses-106_HOatlas.nii.gz")
+                       "sub-01_ses-2015_HOatlas.nii.gz")
  antsImageWrite(hoindwi, fnHOatlas)
   
 ## ----"Calculate adjacency matrices",eval=!haveconnect,echo=TRUE,warning=FALSE,message=FALSE--------------------------------------
@@ -1021,5 +1034,6 @@ if(!haveconnect){
  regionNames <- as.character(HOmeta$data[1, ])
  coords <- matrix(as.numeric(unlist(HOmeta$data[2, ])),
                  48, 4)[, 2:4]
+ save(regionNames,coords,gMT,zMT,file=file.path(rdwi,"Connectivity.rsc"))
 }
   

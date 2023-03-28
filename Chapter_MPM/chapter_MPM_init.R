@@ -1,8 +1,7 @@
-## load packages needed in MPM chapter
-if(!exists("baseDir")) baseDir <- "../.."
-if(!dir.exists(baseDir)) stop("please define baseDir")
-MPMdataDir <- file.path(baseDir,"data","MPM")
-MPMresDir <- file.path(baseDir,"results","MPM")
+if(!exists("baseDir")) baseDir <- dirname(dirname(getwd()))
+source(file.path(baseDir,"MRIwithR","book_init.R"))
+MPMdataDir <- file.path(dataDir,"MPM")
+MPMresDir <- file.path(resDir,"MPM")
 if(!dir.exists(MPMresDir)) dir.create(MPMresDir)
 
 installed <- installed.packages(fields="")
@@ -12,7 +11,7 @@ haveANTsR <- require(ANTsR)
 library(aws)
 library(adimpro)
 library(KernSmooth)
-setCores(8)
+setCores(16)
 
 t1Dir <- "t1w_mfc_3dflash_v1i_R4_0015"
 pdDir <- "pdw_mfc_3dflash_v1i_R4_0009"
